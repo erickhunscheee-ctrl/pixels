@@ -463,6 +463,82 @@
             box-shadow: 0 0 0 1px rgba(255, 255, 255, .04), inset 0 0 0 1px rgba(0, 0, 0, .06);
         }
 
+        /* Pixel rain: visible blocks fall into the existing grid positions. */
+        .hero-art:not(.in) .art-grid span:not(.empty) {
+            opacity: 0;
+            transform: translate3d(var(--rain-x, 0), -220px, 0) rotate(var(--rain-rotate, 0deg));
+        }
+
+        .hero-art.in .art-grid span:not(.empty) {
+            animation: pixel-rain .82s cubic-bezier(.18, .9, .24, 1) both;
+            animation-delay: var(--rain-delay, 0s);
+        }
+
+        .art-grid span:nth-child(1) {
+            --rain-delay: .06s;
+            --rain-x: -18px;
+            --rain-rotate: -7deg;
+        }
+
+        .art-grid span:nth-child(2) {
+            --rain-delay: .16s;
+            --rain-x: 14px;
+            --rain-rotate: 6deg;
+        }
+
+        .art-grid span:nth-child(4) {
+            --rain-delay: .24s;
+            --rain-x: -10px;
+            --rain-rotate: 4deg;
+        }
+
+        .art-grid span:nth-child(6) {
+            --rain-delay: .34s;
+            --rain-x: 18px;
+            --rain-rotate: -5deg;
+        }
+
+        .art-grid span:nth-child(8) {
+            --rain-delay: .42s;
+            --rain-x: -14px;
+            --rain-rotate: 5deg;
+        }
+
+        .art-grid span:nth-child(9) {
+            --rain-delay: .5s;
+            --rain-x: 10px;
+            --rain-rotate: -4deg;
+        }
+
+        .art-grid span:nth-child(10) {
+            --rain-delay: .58s;
+            --rain-x: -18px;
+            --rain-rotate: -6deg;
+        }
+
+        .art-grid span:nth-child(13) {
+            --rain-delay: .68s;
+            --rain-x: 12px;
+            --rain-rotate: 5deg;
+        }
+
+        @keyframes pixel-rain {
+            0% {
+                opacity: 0;
+                transform: translate3d(var(--rain-x, 0), -220px, 0) rotate(var(--rain-rotate, 0deg));
+            }
+
+            72% {
+                opacity: 1;
+                transform: translate3d(calc(var(--rain-x, 0) * -0.12), 8px, 0) rotate(calc(var(--rain-rotate, 0deg) * -0.18));
+            }
+
+            100% {
+                opacity: 1;
+                transform: translate3d(0, 0, 0) rotate(0deg);
+            }
+        }
+
         .art-grid span.green {
             background: #28f06b;
         }
@@ -1463,6 +1539,12 @@
             .highlight-from-bottom::before,
             .highlight-from-top::before {
                 transform: none;
+            }
+
+            .hero-art .art-grid span:not(.empty) {
+                opacity: 1;
+                transform: none;
+                animation: none;
             }
         }
 
