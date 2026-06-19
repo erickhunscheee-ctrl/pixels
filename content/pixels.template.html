@@ -387,18 +387,33 @@
       color: #fff;
       border-radius: 2px;
       line-height: 1;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .hero-hi::before {
+      content: "";
+      position: absolute;
+      inset: 0.03em -0.04em -0.02em;
+      z-index: -1;
+      border-radius: 8px 3px 7px 4px;
+      background: linear-gradient(100deg, var(--highlight-bg), color-mix(in srgb, var(--highlight-bg) 76%, #fff));
+      box-shadow: 0 0.08em 0 color-mix(in srgb, var(--ink) 18%, transparent);
+      transform: scaleX(1);
+      transform-origin: left center;
+      transition: transform .85s cubic-bezier(.16, 1, .3, 1), opacity .85s ease;
     }
 
     .hero-hi-pink {
-      background: var(--pink);
+      --highlight-bg: var(--pink);
     }
 
     .hero-hi-blue {
-      background: var(--blue);
+      --highlight-bg: var(--blue);
     }
 
     .hero-hi-yellow {
-      background: var(--yellow);
+      --highlight-bg: var(--yellow);
     }
 
     .hero-sub {
@@ -1312,16 +1327,107 @@
       }
     }
 
-    /* reveal on scroll */
+    /* ---------- REVEAL ANIMATIONS ---------- */
+    /* Reusable entrance utilities activated by IntersectionObserver. */
     .reveal {
       opacity: 0;
-      transform: translateY(24px);
-      transition: opacity .6s ease, transform .6s ease;
+      transform: translate3d(var(--reveal-x, 0), var(--reveal-y, 24px), 0);
+      transition: opacity .75s ease-out, transform .75s cubic-bezier(.16, 1, .3, 1);
+      transition-delay: var(--reveal-delay, 0s);
+      will-change: opacity, transform;
+    }
+
+    .reveal-left {
+      --reveal-x: -34px;
+      --reveal-y: 0;
+    }
+
+    .reveal-right {
+      --reveal-x: 34px;
+      --reveal-y: 0;
+    }
+
+    .reveal-up {
+      --reveal-x: 0;
+      --reveal-y: 34px;
+    }
+
+    .reveal-down {
+      --reveal-x: 0;
+      --reveal-y: -34px;
     }
 
     .reveal.in {
       opacity: 1;
-      transform: translateY(0);
+      transform: translate3d(0, 0, 0);
+    }
+
+    /* Highlight directions keep the text above a modern animated color stroke. */
+    .highlight-from-left::before,
+    .highlight-from-right::before {
+      transform: scaleX(0);
+    }
+
+    .highlight-from-bottom::before,
+    .highlight-from-top::before {
+      transform: scaleY(0);
+    }
+
+    .highlight-from-left::before {
+      transform-origin: left center;
+    }
+
+    .highlight-from-right::before {
+      transform-origin: right center;
+    }
+
+    .highlight-from-bottom::before {
+      transform-origin: center bottom;
+    }
+
+    .highlight-from-top::before {
+      transform-origin: center top;
+    }
+
+    .in .highlight-from-left::before,
+    .highlight-from-left.in::before,
+    .in .highlight-from-right::before,
+    .highlight-from-right.in::before {
+      transform: scaleX(1);
+    }
+
+    .in .highlight-from-bottom::before,
+    .highlight-from-bottom.in::before,
+    .in .highlight-from-top::before,
+    .highlight-from-top.in::before {
+      transform: scaleY(1);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+
+      .highlight-from-left::before,
+      .highlight-from-right::before,
+      .highlight-from-bottom::before,
+      .highlight-from-top::before {
+        transform: none;
+      }
     }
 
     :focus-visible {
@@ -1350,15 +1456,15 @@
   <main>
 
     <section id="home" class="hero wrap">
-      <div class="hero-text reveal in">
+      <div class="hero-text reveal reveal-left">
         <p class="hero-kicker">Estúdio de plataformas digitais</p>
         <h1 class="hero-title">
           <span class="hero-line"><span class="plain">Somos a</span></span>
-          <span class="hero-line"><span class="hero-hi hero-hi-pink">Pixels.</span><span class="plain">,
+          <span class="hero-line"><span class="hero-hi hero-hi-pink highlight-from-left">Pixels.</span><span class="plain">,
               criamos</span></span>
           <span class="hero-line"><span class="plain">plataformas que</span></span>
           <span class="hero-line"><span class="plain">funcionam</span></span>
-          <span class="hero-line"><span class="plain">do</span> <span class="hero-hi hero-hi-blue">primeiro
+          <span class="hero-line"><span class="plain">do</span> <span class="hero-hi hero-hi-blue highlight-from-right">primeiro
               clique</span></span>
         </h1>
         <p class="hero-sub">Do papel ao produto: desenhamos e construímos sites, apps e sistemas pensados para resolver
@@ -1382,7 +1488,7 @@
             <span>Ver portfólio</span>
           </a>
         </div>
-        <div class="hero-art reveal in">
+        <div class="hero-art reveal reveal-up">
           <div class="art-card">
             <div class="art-grid" aria-label="Logo Pixels em pixel art">
               <span></span>
@@ -1414,13 +1520,13 @@
     </div>
 
     <section id="portfolio" class="portfolio wrap">
-      <div class="section-head reveal">
-        <h2>Nosso leque de <span class="hero-hi hero-hi-yellow">criações</span></h2>
+      <div class="section-head reveal reveal-right">
+        <h2>Nosso leque de <span class="hero-hi hero-hi-yellow highlight-from-right">criações</span></h2>
         <p>Cada plataforma nasceu de um problema específico. Estas já estão no ar — clique e veja de perto.</p>
       </div>
       <div class="portfolio-grid">
 
-        <article class="project-card reveal">
+        <article class="project-card reveal reveal-up" style="--reveal-delay: .04s;">
           <div class="project-visual visual-troca" aria-hidden="true">
             <svg viewBox="0 0 380 260" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="30" y="40" width="260" height="180" rx="24" fill="#fff" stroke="#111" stroke-width="4" />
@@ -1446,7 +1552,7 @@
             <p class="sub">Figurinhas da Copa</p>
             <p>Comunidade para colecionadores trocarem figurinhas do álbum da Copa sem perder tempo nem repetir
               figurinha.</p>
-            <a href="https://example.com/troca-certa" target="_blank" rel="noopener" class="btn btn-dark">
+            <a href="https://troca-certa.vercell.app" target="_blank" rel="noopener" class="btn btn-dark">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 aria-hidden="true">
                 <path d="M5 12h14"></path>
@@ -1457,7 +1563,7 @@
           </div>
         </article>
 
-        <article class="project-card reveal">
+        <article class="project-card reveal reveal-up" style="--reveal-delay: .12s;">
           <div class="project-visual visual-billy" aria-hidden="true">
             <svg viewBox="0 0 380 260" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="134" y="26" width="112" height="208" rx="28" fill="#fff" stroke="#111" stroke-width="4" />
@@ -1482,7 +1588,7 @@
             <p class="sub">Delivery local</p>
             <p>Plataforma de delivery rápida e simples, do pedido até a porta de casa — pensada para pequenos negócios
               locais.</p>
-            <a href="https://example.com/billy-na-porta" target="_blank" rel="noopener" class="btn btn-dark">
+            <a href="https://billynaporta.com.br" target="_blank" rel="noopener" class="btn btn-dark">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 aria-hidden="true">
                 <path d="M5 12h14"></path>
@@ -1493,7 +1599,7 @@
           </div>
         </article>
 
-        <article class="project-card reveal">
+        <article class="project-card reveal reveal-up" style="--reveal-delay: .2s;">
           <div class="project-visual visual-assisteae" aria-hidden="true">
             <svg viewBox="0 0 380 260" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="144" y="18" width="88" height="224" rx="28" fill="#fff" stroke="#111" stroke-width="4" />
@@ -1515,7 +1621,7 @@
             <p class="sub">Lives pagas</p>
             <p>Espaço para criadores venderem acesso a lives exclusivas e monetizarem cada transmissão, com pagamento e
               liberação de acesso integrados.</p>
-            <a href="https://example.com/assisteae" target="_blank" rel="noopener" class="btn btn-dark">
+            <a href="https://assisteae.online" target="_blank" rel="noopener" class="btn btn-dark">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 aria-hidden="true">
                 <path d="M5 12h14"></path>
@@ -1526,7 +1632,7 @@
           </div>
         </article>
 
-        <article class="project-card reveal">
+        <article class="project-card reveal reveal-up" style="--reveal-delay: .28s;">
           <div class="project-visual visual-z2" aria-hidden="true">
             <svg viewBox="0 0 380 260" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="122" y="26" width="126" height="208" rx="34" fill="#fff" stroke="#111" stroke-width="4" />
@@ -1548,7 +1654,7 @@
             <p class="sub">Revenda de veículos</p>
             <p>Página de vendas para revenda de veículos, construída para gerar contato qualificado e fechar negócio
               rápido direto pelo WhatsApp.</p>
-            <a href="https://example.com/z2-motors" target="_blank" rel="noopener" class="btn btn-dark">
+            <a href="https://z2motors.online" target="_blank" rel="noopener" class="btn btn-dark">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 aria-hidden="true">
                 <path d="M5 12h14"></path>
@@ -1564,14 +1670,14 @@
 
     <section id="audiovisual" class="av-section">
       <div class="wrap av-grid">
-        <div class="av-copy reveal">
-          <h2>Captação de eventos e <span class="hero-hi hero-hi-pink">conteúdo para marcas</span></h2>
+        <div class="av-copy reveal reveal-left">
+          <h2>Captação de eventos e <span class="hero-hi hero-hi-pink highlight-from-bottom">conteúdo para marcas</span></h2>
           <!-- <p>Uma seção separada para mostrar eventos, trabalhos de captação, cobertura ao vivo e conteúdo de marca. Os
             cards ficam dentro do painel e você pode ir preenchendo com os jobs já realizados.</p> -->
           <!-- <p>Uma seção separada para mostrar eventos, trabalhos de captação, cobertura ao vivo e conteúdo de marca. Os
             cards ficam dentro do painel e você pode ir preenchendo com os jobs já realizados.</p> -->
         </div>
-        <div class="av-panel reveal">
+        <div class="av-panel reveal reveal-right">
           <div class="av-panel-head">
             <div>
               <span>Projetos recentes</span>
@@ -1696,9 +1802,9 @@
     </section> -->
 
     <section id="contato" class="cta-band">
-      <div class="wrap">
+      <div class="wrap reveal reveal-down">
         <p class="eyebrow" style="justify-content:center;">Vamos conversar</p>
-        <h2>Tem uma ideia? <span class="hero-hi hero-hi-blue">Vamos tirar do papel.</span></h2>
+        <h2>Tem uma ideia? <span class="hero-hi hero-hi-blue highlight-from-top">Vamos tirar do papel.</span></h2>
         <p>Conta pra gente o que você quer construir — site, app, sistema ou a próxima plataforma da sua marca.</p>
         <a href="https://wa.me/5551999129161" class="btn btn-dark btn-lg" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -1793,14 +1899,27 @@
     }
     track.innerHTML = html;
 
-    // scroll reveal
+    // reveal elements and text highlights as they enter the viewport
     const revealEls = document.querySelectorAll('.reveal');
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); }
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      revealEls.forEach(el => el.classList.add('in'));
+    } else {
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in');
+            obs.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.16,
+        rootMargin: '0px 0px -8% 0px',
       });
-    }, { threshold: 0.15 });
-    revealEls.forEach(el => obs.observe(el));
+
+      revealEls.forEach(el => obs.observe(el));
+    }
   </script>
 
 </body>
